@@ -82,5 +82,22 @@ def close_cow_friends(locations, g):
     PQ_Heap.sort(invites);
     return invites;
 
-print([(-3.085938209482254, -35.51086598631448), (26.993450139920384, 0.8331111535179057), (18.498724377558744, 30.754288731062978), (6.608602405714086, 29.946996046275647), (-6.474375132714367, 11.891001424902061), (2.6030415461917915, -23.33983716414429), (20.043810572570063, -34.85060665721733), (23.528508854561295, -2.4642560026968043), (-38.75851406006202, 14.135701382849792), (-25.728316581837667, -26.455843842973806)], 5);
-print(close_cow_friends([(2.7, 8.3), (-1.7, -3.0), (3.4, 5.6), (1.2, 3.4), (10.8, -17.4)], 3));
+def close_cow_friendsGEN(locations, g):
+    '''
+    Return g locations closest to origin in increasing order.
+    Input:  locations | generator of location tuples (x, y)
+            g         | number locations to return
+    '''
+    invites = [];
+    sortedInvites = PQ_Heap(invites);
+    index = 0;
+    for value in locations:
+        if index < g:
+            invites.append(value);
+            sortedInvites.insert();
+        elif distance(value[0], value[1]) < distance(invites[0][0], invites[0][1]):
+            invites[0] = value;
+            max_heapify_down(invites, g, 0);
+        index += 1;
+    PQ_Heap.sort(invites);
+    return invites;
