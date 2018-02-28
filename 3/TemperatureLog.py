@@ -204,7 +204,7 @@ class AVL(BST):
         self.key = str(key) + (
             '=' if self.skew == 0 else
             '>' if self.skew < 0 else
-            '<') + " max: " + str(self.max) + " min: " + str(self.min) + " sum: " + str(self.sum) + " count: " + str(self.count);
+            '<') + " min:" + str(self.min) + " max:" + str(self.max)  + " sum:" + str(self.sum) + " count:" + str(self.count);
         s = super().__str__()
         self.key = key
         return s
@@ -220,39 +220,25 @@ class TemperatureLog(AVL):
         self.max = key;
         self.min = key;
         self.sum = key;
-        self.count = 1;
+        self.count = 0;
 
     def update(self):
         '''Augment AVL update() to fix any properties calculated from children'''
         super().update()
-        # self.sum = self.key;
-        # self.count = 1;
-        # if self.left != None:
-        #     if self.left.min < self.min:
-        #         self.min = self.left.min;
-        #     self.sum += self.left.sum;
-        #     self.count += self.left.count;
-        # if self.right != None:
-        #     if self.right.max > self.max:
-        #         self.max = self.right.max;
-        #     self.sum += self.right.sum;
-        #     self.count += self.right.count;
-        #print("Outside");
         self.max = self.key[1];
         self.min = self.key[1];
         self.sum = self.key[1];
-        if self.parent:
-            print(self.key, self.parent.min);
-            print(self.key, self.parent.max);
-            print(self.key, self.parent.sum);
-            print(self.key, self.parent.count);
-            if self.parent.min > self.min:
-                self.parent.min = self.min;
-            if self.parent.max < self.max:
-                self.parent.max = self.max;
-            self.parent.sum += self.key[1];
-            self.parent.count += 1;
-            self.parent.update();
+        self.count = 1;
+        if self.left:
+            if self.left.min < self.min:
+                self.min = self.left.min;
+            self.sum += self.left.sum;
+            self.count += self.left.count;
+        if self.right:
+            if self.right.max > self.max:
+                self.max = self.right.max;
+            self.sum += self.right.sum;
+            self.count += self.right.count;
 
     def add_sample(self, x, y):
         '''Add a transaction to the transaction log'''
@@ -276,4 +262,5 @@ log = TemperatureLog();
 test = [(5.481, 9.834), (2.411, 7.977), (0.977, 9.435)]
 for x, y in test:
     log.add_sample(x, y);
+    print(log);
 print(log);
