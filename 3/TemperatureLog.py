@@ -18,7 +18,7 @@ class BST:
             return self
         return None
 
-    def find(self, key): 
+    def find(self, key):
         '''Return a highest node having key in self's sub-tree, else None'''
         if self.key is not None:
             if key == self.key:
@@ -35,7 +35,7 @@ class BST:
             if self.right:
                 return self.right.minimum()
             node = self                         # (might be None)
-            while (node.parent and 
+            while (node.parent and
                    node.parent.right is node):
                 node = node.parent
             return node.parent
@@ -64,7 +64,7 @@ class BST:
             self.left.parent = self
         if self.right:
             self.right.parent = self
-        
+
     def delete(self):
         '''Remove self's key from sub-tree'''
         if self.left and self.right:
@@ -101,7 +101,7 @@ class BST:
         return A
 
     def recursive_traversal(self, A = None):
-        if A is None: 
+        if A is None:
             A = []
         if self.left:
             self.left.recursive_traversal(A)
@@ -129,7 +129,7 @@ class BST:
         for i in range(max(len(sl), len(sr))):
             ls = sl[i] if i < len(sl) else ' ' * wl
             rs = sr[i] if i < len(sr) else ' ' * wr
-            a.append(ls + ' ' * len(s) + rs) 
+            a.append(ls + ' ' * len(s) + rs)
         return '\n'.join(a)
 
 class AVL(BST):
@@ -154,7 +154,7 @@ class AVL(BST):
         a b            b c
         '''
         node, c = self.left, self.right
-        a, b = self.left.left, self.left.right 
+        a, b = self.left.left, self.left.right
         self.key, node.key = node.key, self.key
         if a:
             a.parent = self
@@ -170,9 +170,9 @@ class AVL(BST):
         Rotate right to left, assuming right is not None
         __s__        __n__
         a  _n_  =>  _s_  c
-           b c      a b   
+           b c      a b
         '''
-        node, a = self.right, self.left 
+        node, a = self.right, self.left
         b, c = self.right.left, self.right.right
         self.key, node.key = node.key, self.key
         if a:
@@ -189,11 +189,11 @@ class AVL(BST):
         self.update()
         if self.skew == 2:      # must have right child
             if self.right.skew == -1:
-                self.right.right_rotate() 
+                self.right.right_rotate()
             self.left_rotate()
         elif self.skew == -2:   # must have left child
             if self.left.skew == 1:
-                self.left.left_rotate() 
+                self.left.left_rotate()
             self.right_rotate()
         if self.parent:
             self.parent.maintain()
@@ -203,8 +203,8 @@ class AVL(BST):
         key = self.key
         self.key = str(key) + (
             '=' if self.skew == 0 else
-            '>' if self.skew < 0 else 
-            '<')
+            '>' if self.skew < 0 else
+            '<') + " max: " + str(self.max) + " min: " + str(self.min) + " sum: " + str(self.sum) + " count: " + str(self.count);
         s = super().__str__()
         self.key = key
         return s
@@ -217,16 +217,42 @@ class TemperatureLog(AVL):
     def __init__(self, key = None, parent = None):
         '''Augment AVL with additional attributes'''
         super().__init__(key, parent)
-        #####################################################
-        # TODO: Add any additional sub-tree properties here #
-        #####################################################
+        self.max = key;
+        self.min = key;
+        self.sum = key;
+        self.count = 1;
 
     def update(self):
         '''Augment AVL update() to fix any properties calculated from children'''
         super().update()
-        #########################################################
-        # TODO: Add any maintenence of sub-tree properties here #
-        #########################################################
+        # self.sum = self.key;
+        # self.count = 1;
+        # if self.left != None:
+        #     if self.left.min < self.min:
+        #         self.min = self.left.min;
+        #     self.sum += self.left.sum;
+        #     self.count += self.left.count;
+        # if self.right != None:
+        #     if self.right.max > self.max:
+        #         self.max = self.right.max;
+        #     self.sum += self.right.sum;
+        #     self.count += self.right.count;
+        #print("Outside");
+        self.max = self.key[1];
+        self.min = self.key[1];
+        self.sum = self.key[1];
+        if self.parent:
+            print(self.key, self.parent.min);
+            print(self.key, self.parent.max);
+            print(self.key, self.parent.sum);
+            print(self.key, self.parent.count);
+            if self.parent.min > self.min:
+                self.parent.min = self.min;
+            if self.parent.max < self.max:
+                self.parent.max = self.max;
+            self.parent.sum += self.key[1];
+            self.parent.count += 1;
+            self.parent.update();
 
     def add_sample(self, x, y):
         '''Add a transaction to the transaction log'''
@@ -245,3 +271,9 @@ class TemperatureLog(AVL):
         # TODO: Implement me #
         ######################
         return 0
+
+log = TemperatureLog();
+test = [(5.481, 9.834), (2.411, 7.977), (0.977, 9.435)]
+for x, y in test:
+    log.add_sample(x, y);
+print(log);
