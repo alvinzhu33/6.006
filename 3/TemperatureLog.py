@@ -254,13 +254,13 @@ class TemperatureLog(AVL):
         if self.key is None:
             return None
         unique = self;
-        print(unique.key,x);
-        while x <= unique.key[0]-w or x >= unique.key[0]+w:
+        while unique and (x <= unique.key[0]-w or x >= unique.key[0]+w):
             if x <= unique.key[0]-w:
-                unique = self.left;
+                unique = unique.left;
             elif x >= unique.key[0]+w:
-                unique = self.right;
-        # print(unique.key);
+                unique = unique.right;
+        if not unique:
+            return 0;
         if unique.min > x-w and unique.max < x+w:
             return unique.sum/unique.count;
         else:
@@ -272,9 +272,13 @@ class TemperatureLog(AVL):
                 if left.min > x-w:
                     ysum += left.sum;
                     count += left.count;
-                elif left.key[0] > x-w and left.right:
-                    ysum += left.key[1] + left.right.sum;
-                    count += 1 + left.right.count;
+                    break;
+                elif left.key[0] > x-w:
+                    ysum += left.key[1];
+                    count += 1;
+                    if left.right:
+                        ysum += left.right.sum;
+                        count += left.right.count;
                     left = left.left;
                 else:
                     left = left.right;
@@ -282,21 +286,23 @@ class TemperatureLog(AVL):
                 if right.max < x-w:
                     ysum += right.sum;
                     count += right.count;
-                elif right.key[0] < x-w and right.left:
-                    ysum += right.key[1] + right.left.sum;
-                    count += 1 + right.left.sum;
+                    break;
+                elif right.key[0] < x+w:
+                    ysum += right.key[1];
+                    count += 1;
+                    if right.left:
+                        ysum += right.left.sum;
+                        count += right.left.count;
                     right = right.right;
                 else:
                     right = right.left;
-            #print(ysum, count);
             return ysum/count;
         return 0
 
-log = TemperatureLog();
-test = [(5, 9), (2, 7), (0, 9), (0, 4), (8, 2), (8, 7), (1, 0), (0, 7), (7, 8), (1, 7)]
-test = [(5, 9), (2, 7), (0, 9), (0, 4)]
-for x, y in test:
-    log.add_sample(x, y);
-print(log);
-print(log.predict(0, 1));
-#print(log);
+# log = TemperatureLog();
+# test = [(8.152, 9.648), (11.768, 15.478), (4.915, 18.909), (6.544, 16.42), (0.912, 14.565), (19.589, 13.193), (17.566, 6.106), (14.04, 0.992), (1.91, 18.539), (19.265, 4.319), (6.477, 8.815), (2.827, 3.101), (3.685, 5.109), (15.497, 0.253), (8.97, 5.518), (12.381, 16.006), (9.577, 4.924), (11.415, 4.853), (4.297, 17.488), (12.465, 16.38)]
+#
+# for x, y in test:
+#     log.add_sample(x, y);
+# print(log);
+# print(log.predict(8, 2));
