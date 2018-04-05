@@ -19,60 +19,77 @@ def computeAnswer(matrix):
 def solve_puzzle(config):
     '''Returns move sequence to solve configuration, or None'''
     moves = []
+    level = set();
+    level.add((config,tuple(moves)));
     configSet = set();
     answer = computeAnswer(config);
 
-    while answer not in configSet:
-#        print("GO");
-        moves += cont_solve_puzzle(config, answer, configSet);
-#    print(configSet)
+    while level:
+        newlevel = set();
+        for tup in level:
+            matrix = tup[0];
+            if matrix == answer:
+                return list(tup[1]);
+            if matrix not in configSet:
+                configSet.add(matrix);
+                zero = findZero(matrix);
+                if zero[0] < len(matrix)-1:
+                    copy = list(list(line) for line in matrix);
+                    copy[zero[0]][zero[1]], copy[zero[0]+1][zero[1]] = copy[zero[0]+1][zero[1]], copy[zero[0]][zero[1]];
+                    copy = tuple(tuple(line) for line in copy);
+                    newlevel.add((copy, tuple(list(tup[1])+['U'])))
+                if zero[1] > 0:
+                    copy = list(list(line) for line in matrix);
+                    copy[zero[0]][zero[1]], copy[zero[0]][zero[1]-1] = copy[zero[0]][zero[1]-1], copy[zero[0]][zero[1]]
+                    copy = tuple(tuple(line) for line in copy);
+                    newlevel.add((copy, tuple(list(tup[1])+['R'])))
+                if zero[0] > 0:
+                    copy = list(list(line) for line in matrix);
+                    copy[zero[0]][zero[1]], copy[zero[0]-1][zero[1]] = copy[zero[0]-1][zero[1]], copy[zero[0]][zero[1]]
+                    copy = tuple(tuple(line) for line in copy);
+                    newlevel.add((copy, tuple(list(tup[1])+['D'])))
+                if zero[1] < len(matrix[0])-1:
+                    copy = list(list(line) for line in matrix);
+                    copy[zero[0]][zero[1]], copy[zero[0]][zero[1]+1] = copy[zero[0]][zero[1]+1], copy[zero[0]][zero[1]]
+                    copy = tuple(tuple(line) for line in copy);
+                    newlevel.add((copy, tuple(list(tup[1])+['L'])))
+        level = newlevel;
 
-    return moves[:len(moves)-1];
+    return None;
 
-def cont_solve_puzzle(config, answer, configSet):
-    moves = [];
-    zero = findZero(config);
-#    print("config", config);
-#    print("configs:", configSet);
-#    print("zero", zero);
-    if config not in configSet:
-        configSet.add(config);
-#        print(1, zero);
-        if config==answer:
-            return ["DONE"];
-        if zero[0] < len(config)-1:
-#            print(1);
-            copy = list(list(line) for line in config);
-            copy[zero[0]][zero[1]], copy[zero[0]+1][zero[1]] = copy[zero[0]+1][zero[1]], copy[zero[0]][zero[1]];         
-            copy = tuple(tuple(line) for line in copy);
-            direction = cont_solve_puzzle(copy, answer, configSet)
-            if direction:
-                moves += ['U'] + direction;
-#        print(2, zero);        
-        if zero[1] > 0:
-#            print(2);
-            copy = list(list(line) for line in config);
-            copy[zero[0]][zero[1]], copy[zero[0]][zero[1]-1] = copy[zero[0]][zero[1]-1], copy[zero[0]][zero[1]]
-            copy = tuple(tuple(line) for line in copy);
-            direction = cont_solve_puzzle(copy, answer, configSet)
-            if direction:
-                moves += ['R'] + direction;
-#        print(3, zero);
-        if zero[0] > 0:
-#            print(3);
-            copy = list(list(line) for line in config);
-            copy[zero[0]][zero[1]], copy[zero[0]-1][zero[1]] = copy[zero[0]-1][zero[1]], copy[zero[0]][zero[1]]
-            copy = tuple(tuple(line) for line in copy);
-            direction = cont_solve_puzzle(copy, answer, configSet)
-            if direction:
-                moves += ['D'] + direction;
-#        print(2, zero);        
-        if zero[1] < len(config[0])-1:
-#            print(4);
-            copy = list(list(line) for line in config);
-            copy[zero[0]][zero[1]], copy[zero[0]][zero[1]+1] = copy[zero[0]][zero[1]+1], copy[zero[0]][zero[1]]
-            copy = tuple(tuple(line) for line in copy);
-            direction = cont_solve_puzzle(copy, answer, configSet)
-            if direction:
-                moves += ['L'] + direction;
-    return moves;
+# def cont_solve_puzzle(config, answer, configSet):
+#     moves = [];
+#
+#     if config not in configSet:
+#         configSet.add(config);
+#         if config==answer:
+#             return ["DONE"];
+#         if zero[0] < len(config)-1:
+#             copy = list(list(line) for line in config);
+#             copy[zero[0]][zero[1]], copy[zero[0]+1][zero[1]] = copy[zero[0]+1][zero[1]], copy[zero[0]][zero[1]];
+#             copy = tuple(tuple(line) for line in copy);
+#             direction = cont_solve_puzzle(copy, answer, configSet)
+#             if direction:
+#                 moves += ['U'] + direction;
+#         if zero[1] > 0:
+#             copy = list(list(line) for line in config);
+#             copy[zero[0]][zero[1]], copy[zero[0]][zero[1]-1] = copy[zero[0]][zero[1]-1], copy[zero[0]][zero[1]]
+#             copy = tuple(tuple(line) for line in copy);
+#             direction = cont_solve_puzzle(copy, answer, configSet)
+#             if direction:
+#                 moves += ['R'] + direction;
+#         if zero[0] > 0:
+#             copy = list(list(line) for line in config);
+#             copy[zero[0]][zero[1]], copy[zero[0]-1][zero[1]] = copy[zero[0]-1][zero[1]], copy[zero[0]][zero[1]]
+#             copy = tuple(tuple(line) for line in copy);
+#             direction = cont_solve_puzzle(copy, answer, configSet)
+#             if direction:
+#                 moves += ['D'] + direction;
+#         if zero[1] < len(config[0])-1:
+#             copy = list(list(line) for line in config);
+#             copy[zero[0]][zero[1]], copy[zero[0]][zero[1]+1] = copy[zero[0]][zero[1]+1], copy[zero[0]][zero[1]]
+#             copy = tuple(tuple(line) for line in copy);
+#             direction = cont_solve_puzzle(copy, answer, configSet)
+#             if direction:
+#                 moves += ['L'] + direction;
+#     return moves;
