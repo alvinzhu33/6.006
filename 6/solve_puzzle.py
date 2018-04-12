@@ -19,40 +19,36 @@ def computeAnswer(matrix):
 def solve_puzzle(config):
     '''Returns move sequence to solve configuration, or None'''
     moves = []
-    level = set();
-    level.add((config,tuple(moves)));
+    level = [];
+    level += [[config,moves]];
     configSet = set();
     answer = computeAnswer(config);
 
     while level:
-        newlevel = set();
+        newlevel = [];
         for tup in level:
-            matrix = tup[0];
+            matrix = tuple(tuple(line) for line in tup[0])
             if matrix == answer:
-                return list(tup[1]);
+                return tup[1];
             if matrix not in configSet:
                 configSet.add(matrix);
                 zero = findZero(matrix);
                 if zero[0] < len(matrix)-1:
                     copy = list(list(line) for line in matrix);
                     copy[zero[0]][zero[1]], copy[zero[0]+1][zero[1]] = copy[zero[0]+1][zero[1]], copy[zero[0]][zero[1]];
-                    copy = tuple(tuple(line) for line in copy);
-                    newlevel.add((copy, tuple(list(tup[1])+['U'])))
+                    newlevel+=[[copy, tup[1]+['U']]]
                 if zero[1] > 0:
                     copy = list(list(line) for line in matrix);
                     copy[zero[0]][zero[1]], copy[zero[0]][zero[1]-1] = copy[zero[0]][zero[1]-1], copy[zero[0]][zero[1]]
-                    copy = tuple(tuple(line) for line in copy);
-                    newlevel.add((copy, tuple(list(tup[1])+['R'])))
+                    newlevel+=[[copy, tup[1]+['R']]]
                 if zero[0] > 0:
                     copy = list(list(line) for line in matrix);
                     copy[zero[0]][zero[1]], copy[zero[0]-1][zero[1]] = copy[zero[0]-1][zero[1]], copy[zero[0]][zero[1]]
-                    copy = tuple(tuple(line) for line in copy);
-                    newlevel.add((copy, tuple(list(tup[1])+['D'])))
+                    newlevel+=[[copy, tup[1]+['D']]]
                 if zero[1] < len(matrix[0])-1:
                     copy = list(list(line) for line in matrix);
                     copy[zero[0]][zero[1]], copy[zero[0]][zero[1]+1] = copy[zero[0]][zero[1]+1], copy[zero[0]][zero[1]]
-                    copy = tuple(tuple(line) for line in copy);
-                    newlevel.add((copy, tuple(list(tup[1])+['L'])))
+                    newlevel+=[[copy, tup[1]+['L']]]
         level = newlevel;
 
     return None;
