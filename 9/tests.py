@@ -43,7 +43,7 @@ class TestPrizeSelection(unittest.TestCase):
 
     def test_04(self):
         self.assertTrue(check_correct(tests[3], test_answers[3]))
-       
+
     def test_05(self):
         self.assertTrue(check_correct(tests[4], test_answers[4]))
 
