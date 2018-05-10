@@ -13,25 +13,27 @@ def min_votes(districts, c, memo={}):
         return None;
 
     i = len(districts)-1;
+
     if (i, c-districts[i][1]) in memo:
         first = memo[(i,c-districts[i][1])]
     else:
-        first = min_votes(districts[:len(districts)-1], c-districts[i][1], memo);
-        if first != None:
-            first += districts[i][0]/2;
+        first = min_votes(districts[:i], c-districts[i][1], memo);
+        if first == None:
+            first = float("inf");
         else:
-            first = float("inf")
+            first += districts[i][0]/2;
     if (i, c) in memo:
         second = memo[(i, c)];
     else:
-        second = min_votes(districts[:len(districts)-1], c, memo)
+        second = min_votes(districts[:i], c, memo)
         if second == None:
             second = float("inf")
     decision = min(first, second);
     if decision != float("inf"):
         memo[(i, c)] = decision;
+    # print(first, second);
 
-    print(memo)
+    # print(memo)
     if (i, c) in memo and memo[(i, c)]!=float("inf"):
         # if memo[c] == float("inf"):
         #     return None;
@@ -40,3 +42,9 @@ def min_votes(districts, c, memo={}):
         return None;
 
 print(min_votes([(93635, 2604), (7087, 3108), (64379, 1764), (48761, 3822), (93330, 2100), (37785, 2184), (71978, 1134), (98365, 462), (21939, 2982), (61448, 2058)], 9282));
+
+c = [2604, 3108, 1764, 3822, 2100, 2184, 1134, 462, 2982, 2058]
+y=0
+for x in range(len(c)):
+    y += c[x]
+print(y)
