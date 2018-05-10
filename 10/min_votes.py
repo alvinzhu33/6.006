@@ -6,28 +6,37 @@ def min_votes(districts, c, memo={}):
     Output: Minimum number of popular votes necessary, or None if not possible
     '''
     if c < 0:
-        return float("inf");
+        return None;
     if c==0:
         return 0;
     elif not districts:
-        return float("inf");
+        return None;
 
     i = len(districts)-1;
     if (i, c-districts[i][1]) in memo:
         first = memo[(i,c-districts[i][1])]
     else:
-        first = districts[i][0]/2 + min_votes(districts[:len(districts)-1], c-districts[i][1], memo);
+        first = min_votes(districts[:len(districts)-1], c-districts[i][1], memo);
+        if first != None:
+            first += districts[i][0]/2;
+        else:
+            first = float("inf")
     if (i, c) in memo:
         second = memo[(i, c)];
     else:
         second = min_votes(districts[:len(districts)-1], c, memo)
+        if second == None:
+            second = float("inf")
     decision = min(first, second);
-    memo[(i, c)] = decision;
+    if decision != float("inf"):
+        memo[(i, c)] = decision;
 
-    # print(memo)
-    if memo[(i, c)]:
+    print(memo)
+    if (i, c) in memo and memo[(i, c)]!=float("inf"):
         # if memo[c] == float("inf"):
         #     return None;
         return memo[(i, c)];
+    else:
+        return None;
 
-print(min_votes([(61882, 66), (38066, 153), (70731, 30), (91363, 198), (56869, 276)], 66+153));
+print(min_votes([(93635, 2604), (7087, 3108), (64379, 1764), (48761, 3822), (93330, 2100), (37785, 2184), (71978, 1134), (98365, 462), (21939, 2982), (61448, 2058)], 9282));
