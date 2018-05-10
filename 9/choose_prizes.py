@@ -1,3 +1,4 @@
+import math
 # def catalan(n):
 #         catNums = [None]*(n+1);
 #         catNums[0] = 1;
@@ -52,5 +53,34 @@ def choose_prizes(prize_values):
         index = parent[index];
 
     return prizes;
+
+def ugly(x):
+    first = 1+.93/.07*math.e**(-10000*x)
+    second = first/(math.e**(-9500*x)+.93/.07*math.e**(-10000*x))
+    final = math.log(second)/x
+    print(final);
+    return;
+
+def ugly2(x):
+    first = 1+.93/.07*math.e**(-10000*x)
+    second = first/(math.e**(-7500*x)+.93/.07*math.e**(-10000*x))
+    final = math.log(second)/x
+    print(final);
+    return;
+
+def pa(x):
+    print((200*x-500)/(1+2*x));
+    return;
+
+ugly(2.3*10**-6)
+ugly2(2.3*10**-6)
+ugly(2.6*10**-5)
+ugly2(2.6*10**-5)
+ugly(2.9*10**-4)
+ugly2(2.9*10**-4)
+print("HERE")
+
+for x in range(20):
+    pa(x);
 
 # print(choose_prizes([1, 4, 5, 5, 1]))
